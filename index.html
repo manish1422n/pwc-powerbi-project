@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PwC Power BI Project – Manish Mittal</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --pwc-red: #e03b2f;
+    --pwc-dark: #1a1a2e;
+    --pwc-mid: #16213e;
+    --accent: #f5a623;
+    --accent2: #53d8fb;
+    --text: #e8eaf0;
+    --muted: #8892a4;
+    --white: #ffffff;
+    --radius: 16px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--pwc-dark); color: var(--text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 60px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 40%, rgba(224,59,47,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 70%, rgba(83,216,251,0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(224,59,47,0.15); border: 1px solid rgba(224,59,47,0.4);
+    color: #ff6b5b; font-size: 12px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; padding: 8px 20px; border-radius: 100px;
+    margin-bottom: 32px; animation: fadeUp 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-size: clamp(2.6rem, 7vw, 5.5rem);
+    font-weight: 800; line-height: 1.05; letter-spacing: -1px;
+    margin-bottom: 24px; animation: fadeUp 0.7s 0.1s ease both;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--pwc-red), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero p {
+    font-size: 1.15rem; color: var(--muted); max-width: 560px;
+    line-height: 1.7; margin-bottom: 40px; animation: fadeUp 0.7s 0.2s ease both;
+  }
+  .hero-meta { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; animation: fadeUp 0.7s 0.3s ease both; }
+  .meta-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .meta-value { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--white); }
+  .meta-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+  .divider-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); align-self: center; }
+  .scroll-hint {
+    position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--muted); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+  .scroll-hint::after { content: ''; display: block; width: 1px; height: 40px; background: linear-gradient(to bottom, var(--muted), transparent); }
+
+  /* SECTIONS */
+  section { max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
+  .section-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; color: var(--white); margin-bottom: 48px; }
+
+  /* TASK CARDS */
+  .task-card {
+    background: var(--pwc-mid); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius); overflow: hidden; margin-bottom: 64px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .task-card:hover { transform: translateY(-4px); border-color: rgba(224,59,47,0.3); }
+  .task-card-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .task-card:nth-child(even) .task-card-inner { direction: rtl; }
+  .task-card:nth-child(even) .task-card-inner > * { direction: ltr; }
+
+  /* IMAGES — full, uncropped */
+  .task-img-wrap {
+    position: relative; overflow: hidden;
+    min-height: 360px; background: #080d1a;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .task-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: contain; object-position: center;
+    transition: transform 0.5s ease;
+    padding: 16px;
+  }
+  .task-card:hover .task-img-wrap img { transform: scale(1.02); }
+
+  .task-content { padding: 44px 40px; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+
+  /* CLASSICAL TASK NUMBERS */
+  .task-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem; font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    line-height: 1; margin-bottom: -20px;
+    letter-spacing: -2px;
+  }
+
+  .task-tag {
+    display: inline-block; background: rgba(224,59,47,0.15);
+    border: 1px solid rgba(224,59,47,0.35); color: #ff6b5b;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 100px; width: fit-content;
+  }
+  .task-title { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 700; color: var(--white); line-height: 1.2; }
+  .task-desc { font-size: 0.91rem; color: var(--muted); line-height: 1.7; }
+
+  .insights-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .insights-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.87rem; color: var(--text); line-height: 1.5; }
+  .insights-list li::before { content: '→'; color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  .kpi-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .kpi-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px 18px; flex: 1; min-width: 90px; }
+  .kpi-val { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--accent); }
+  .kpi-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+  .tools-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tool-chip { background: rgba(83,216,251,0.08); border: 1px solid rgba(83,216,251,0.2); color: var(--accent2); font-size: 11px; padding: 4px 12px; border-radius: 100px; font-weight: 500; }
+
+  /* SQL SECTION */
+  .sql-section { background: var(--pwc-mid); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius); padding: 40px; }
+  .sql-header { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+  .sql-dot { width: 12px; height: 12px; border-radius: 50%; }
+  pre {
+    background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; padding: 24px 28px; overflow-x: auto;
+    font-size: 0.82rem; line-height: 1.8; color: #c9d1d9;
+    white-space: pre; font-family: 'Courier New', monospace;
+  }
+  .sql-keyword { color: #ff79c6; font-weight: 600; }
+  .sql-func    { color: #8be9fd; }
+  .sql-string  { color: #f1fa8c; }
+  .sql-comment { color: #6272a4; font-style: italic; }
+  .sql-num     { color: #bd93f9; }
+
+  /* ABOUT */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .about-card { background: var(--pwc-mid); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius); padding: 32px; }
+  .about-card h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 16px; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-tag { background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.25); color: var(--accent); font-size: 12px; padding: 5px 14px; border-radius: 100px; }
+
+  footer { border-top: 1px solid rgba(255,255,255,0.07); padding: 40px 24px; text-align: center; color: var(--muted); font-size: 0.85rem; }
+  footer a { color: var(--accent2); text-decoration: none; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+  @media (max-width: 768px) {
+    .task-card-inner { grid-template-columns: 1fr; }
+    .task-card:nth-child(even) .task-card-inner { direction: ltr; }
+    .task-img-wrap { min-height: 240px; }
+    .task-content { padding: 28px 24px; }
+    .about-grid { grid-template-columns: 1fr; }
+    .hero-meta { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">⚡ PwC Switzerland × Forage</div>
+  <h1>Power BI<br/><span>Job Simulation</span></h1>
+  <p>A 3-task virtual internship covering call centre analytics, customer churn, and diversity — built with Power BI, DAX, and MySQL.</p>
+  <div class="hero-meta">
+    <div class="meta-item">
+      <span class="meta-value">3</span>
+      <span class="meta-label">Dashboards</span>
+    </div>
+    <div class="divider-dot"></div>
+    <div class="meta-item">
+      <span class="meta-value">7K+</span>
+      <span class="meta-label">Customers Analysed</span>
+    </div>
+    <div class="divider-dot"></div>
+    <div class="meta-item">
+      <span class="meta-value">89.9%</span>
+      <span class="meta-label">Resolution Rate</span>
+    </div>
+    <div class="divider-dot"></div>
+    <div class="meta-item">
+      <span class="meta-value">Nov '24</span>
+      <span class="meta-label">Completed</span>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</div>
+
+<!-- TASKS -->
+<section>
+  <div class="section-label">Project Deliverables</div>
+  <div class="section-title">Three Real-World Tasks</div>
+
+  <!-- TASK 1 -->
+  <div class="task-card">
+    <div class="task-card-inner">
+      <div class="task-img-wrap">
+        <img src="images/task1_call_center.png" alt="Call Centre Trend Dashboard" loading="lazy"/>
+      </div>
+      <div class="task-content">
+        <div class="task-number">01</div>
+        <div class="task-tag">Call Centre Analytics</div>
+        <div class="task-title">Call Centre Trend Analysis</div>
+        <p class="task-desc">Built an interactive Power BI dashboard to help the Call Centre Manager track agent performance, resolution rates, and customer satisfaction KPIs — with dynamic filters by Agent, Topic, and Date range.</p>
+        <div class="kpi-row">
+          <div class="kpi-box"><div class="kpi-val">89.94%</div><div class="kpi-lbl">Resolution Rate</div></div>
+          <div class="kpi-box"><div class="kpi-val">3.41/5</div><div class="kpi-lbl">Avg Satisfaction</div></div>
+          <div class="kpi-box"><div class="kpi-val">81.08%</div><div class="kpi-lbl">Answer Rate</div></div>
+        </div>
+        <ul class="insights-list">
+          <li>January had the highest call volume with 1,455 answered calls</li>
+          <li>Jim led in resolved calls (485); Greg had the slowest response (143s avg)</li>
+          <li>DAX measures powering all KPI cards and dynamic slicers</li>
+          <li>All metrics validated using MySQL queries</li>
+        </ul>
+        <div class="tools-row">
+          <span class="tool-chip">Power BI</span>
+          <span class="tool-chip">DAX</span>
+          <span class="tool-chip">MySQL</span>
+          <span class="tool-chip">KPI Design</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="task-card">
+    <div class="task-card-inner">
+      <div class="task-img-wrap">
+        <img src="images/task2_customer_retention.png" alt="Customer Retention Dashboard" loading="lazy"/>
+      </div>
+      <div class="task-content">
+        <div class="task-number">02</div>
+        <div class="task-tag">Customer Retention</div>
+        <div class="task-title">Churn & Retention Dashboard</div>
+        <p class="task-desc">Designed a retention dashboard for the Retention Manager to proactively identify customers at risk of churning — with full demographic, payment, and subscription breakdowns.</p>
+        <div class="kpi-row">
+          <div class="kpi-box"><div class="kpi-val">1,870</div><div class="kpi-lbl">At-Risk Customers</div></div>
+          <div class="kpi-box"><div class="kpi-val">$64.76</div><div class="kpi-lbl">Avg Monthly Charge</div></div>
+          <div class="kpi-box"><div class="kpi-val">7,043</div><div class="kpi-lbl">Total Customers</div></div>
+        </div>
+        <ul class="insights-list">
+          <li>42% of customers on 6-year contracts — strongest retention segment</li>
+          <li>Electronic check is the most common payment method (2.4K users)</li>
+          <li>90% use phone services; only 38% use streaming TV</li>
+          <li>DAX churn segmentation logic identifies risk profiles dynamically</li>
+        </ul>
+        <div class="tools-row">
+          <span class="tool-chip">Power BI</span>
+          <span class="tool-chip">DAX</span>
+          <span class="tool-chip">Churn Modelling</span>
+          <span class="tool-chip">Data Modeling</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="task-card">
+    <div class="task-card-inner">
+      <div class="task-img-wrap">
+        <img src="images/task3_diversity_inclusion.png" alt="Diversity and Inclusion Dashboard" loading="lazy"/>
+      </div>
+      <div class="task-content">
+        <div class="task-number">03</div>
+        <div class="task-tag">HR Analytics</div>
+        <div class="task-title">Diversity & Inclusion Analysis</div>
+        <p class="task-desc">Analysed gender balance across job levels, promotions, and performance ratings to help HR leadership understand diversity gaps and make informed decisions.</p>
+        <div class="kpi-row">
+          <div class="kpi-box"><div class="kpi-val">51</div><div class="kpi-lbl">FY21 Promotions</div></div>
+          <div class="kpi-box"><div class="kpi-val">2.41</div><div class="kpi-lbl">FY20 Avg Rating</div></div>
+          <div class="kpi-box"><div class="kpi-val">87.5%</div><div class="kpi-lbl">Male Execs</div></div>
+        </div>
+        <ul class="insights-list">
+          <li>Gender gap intensifies at senior levels — only 12.5% female executives</li>
+          <li>Junior Officer level is nearly balanced (53% F / 47% M)</li>
+          <li>93% full-time contracts; Switzerland and Europe = 97% of workforce</li>
+          <li>Largest age cohort: 20–29 years (223 employees)</li>
+        </ul>
+        <div class="tools-row">
+          <span class="tool-chip">Power BI</span>
+          <span class="tool-chip">DAX</span>
+          <span class="tool-chip">HR Analytics</span>
+          <span class="tool-chip">Excel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SQL SECTION -->
+<section style="padding-top: 0;">
+  <div class="section-label">Data Validation</div>
+  <div class="section-title">MySQL Analysis – Task 1</div>
+  <div class="sql-section">
+    <div class="sql-header">
+      <div class="sql-dot" style="background:#ff5f56"></div>
+      <div class="sql-dot" style="background:#ffbd2e"></div>
+      <div class="sql-dot" style="background:#27c93f"></div>
+      <span style="color:var(--muted);font-size:13px;margin-left:8px">call_center_analysis.sql</span>
+    </div>
+<pre>
+<span class="sql-comment">-- 1. Count resolved calls by topic</span>
+<span class="sql-keyword">SELECT</span> topic, <span class="sql-func">COUNT</span>(resolved) <span class="sql-keyword">AS</span> resolved_count
+<span class="sql-keyword">FROM</span> task1_forage.call_center
+<span class="sql-keyword">WHERE</span> resolved = <span class="sql-string">'Y'</span>
+<span class="sql-keyword">GROUP BY</span> topic;
+
+<span class="sql-comment">-- 2. Average talk duration by topic</span>
+<span class="sql-keyword">SELECT</span>
+    Topic,
+    <span class="sql-func">SEC_TO_TIME</span>(<span class="sql-func">AVG</span>(<span class="sql-func">TIME_TO_SEC</span>(AvgTalkDuration))) <span class="sql-keyword">AS</span> AvgTalkDuration
+<span class="sql-keyword">FROM</span> task1_forage.call_center
+<span class="sql-keyword">GROUP BY</span> Topic;
+
+<span class="sql-comment">-- 3. Average satisfaction rating by topic</span>
+<span class="sql-keyword">SELECT</span> topic, <span class="sql-func">ROUND</span>(<span class="sql-func">AVG</span>(<span class="sql-string">`satisfaction rating`</span>), <span class="sql-num">2</span>) <span class="sql-keyword">AS</span> avg_rating
+<span class="sql-keyword">FROM</span> task1_forage.call_center
+<span class="sql-keyword">GROUP BY</span> topic;
+
+<span class="sql-comment">-- 4. Overall average speed of answer</span>
+<span class="sql-keyword">SELECT</span>
+    <span class="sql-func">SEC_TO_TIME</span>(<span class="sql-func">ROUND</span>(<span class="sql-func">AVG</span>(<span class="sql-func">TIME_TO_SEC</span>(<span class="sql-string">`speed of answer in seconds`</span>)), <span class="sql-num">2</span>)) <span class="sql-keyword">AS</span> avg_speed
+<span class="sql-keyword">FROM</span> task1_forage.call_center;
+
+<span class="sql-comment">-- 5. Total answered calls per month</span>
+<span class="sql-keyword">SELECT</span>
+    <span class="sql-func">MONTH</span>(<span class="sql-func">STR_TO_DATE</span>(Date, <span class="sql-string">'%m/%d/%Y'</span>)) <span class="sql-keyword">AS</span> CallMonth,
+    <span class="sql-func">COUNT</span>(*) <span class="sql-keyword">AS</span> TotalAnsweredCalls
+<span class="sql-keyword">FROM</span> task1_forage.call_center
+<span class="sql-keyword">WHERE</span> <span class="sql-string">`Answered (Y/N)`</span> = <span class="sql-string">'Y'</span>
+<span class="sql-keyword">GROUP BY</span> <span class="sql-func">MONTH</span>(<span class="sql-func">STR_TO_DATE</span>(Date, <span class="sql-string">'%m/%d/%Y'</span>));
+
+<span class="sql-comment">-- 6. Per-agent summary: answered, resolved, avg rating, avg speed</span>
+<span class="sql-keyword">SELECT</span>
+    Agent,
+    <span class="sql-func">COUNT</span>(<span class="sql-keyword">CASE WHEN</span> <span class="sql-string">`Answered (Y/N)`</span> = <span class="sql-string">'Y'</span> <span class="sql-keyword">THEN</span> <span class="sql-num">1</span> <span class="sql-keyword">END</span>) <span class="sql-keyword">AS</span> TotalAnsweredCalls,
+    <span class="sql-func">COUNT</span>(<span class="sql-keyword">CASE WHEN</span> Resolved = <span class="sql-string">'Y'</span> <span class="sql-keyword">THEN</span> <span class="sql-num">1</span> <span class="sql-keyword">END</span>)          <span class="sql-keyword">AS</span> TotalResolvedCalls,
+    <span class="sql-func">ROUND</span>(<span class="sql-func">AVG</span>(<span class="sql-string">`Satisfaction rating`</span>), <span class="sql-num">2</span>)                   <span class="sql-keyword">AS</span> AvgSatisfactionRating
+<span class="sql-keyword">FROM</span> task1_forage.call_center
+<span class="sql-keyword">GROUP BY</span> Agent;
+</pre>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section>
+  <div class="section-label">About the Author</div>
+  <div class="section-title">Manish Mittal</div>
+  <div class="about-grid">
+    <div class="about-card">
+      <h3>🛠 Technical Skills</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Power BI</span>
+        <span class="skill-tag">DAX</span>
+        <span class="skill-tag">MySQL</span>
+        <span class="skill-tag">Advanced Excel</span>
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">Pandas</span>
+        <span class="skill-tag">NumPy</span>
+        <span class="skill-tag">ETL</span>
+        <span class="skill-tag">Data Modeling</span>
+        <span class="skill-tag">EDA</span>
+        <span class="skill-tag">KPI Tracking</span>
+        <span class="skill-tag">Predictive Analytics</span>
+      </div>
+    </div>
+    <div class="about-card">
+      <h3>📬 Contact</h3>
+      <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px;">
+        <a href="mailto:22manishmittal@gmail.com" style="color:var(--accent2);text-decoration:none;font-size:0.92rem">📧 22manishmittal@gmail.com</a>
+        <a href="https://linkedin.com/in/manish-mittal-data-analyst" target="_blank" style="color:var(--accent2);text-decoration:none;font-size:0.92rem">🔗 linkedin.com/in/manish-mittal-data-analyst</a>
+        <a href="https://github.com/manish1422n" target="_blank" style="color:var(--accent2);text-decoration:none;font-size:0.92rem">💻 github.com/manish1422n</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Built by <strong style="color:var(--white)">Manish Mittal</strong> &nbsp;·&nbsp; PwC Switzerland Power BI Job Simulation &nbsp;·&nbsp; <a href="https://www.theforage.com" target="_blank">Forage</a></p>
+</footer>
+
+</body>
+</html>
