@@ -8,6 +8,9 @@
 
 > Virtual internship completed via **Forage** | Certificate issued **November 9th, 2024**
 
+## 🌐 Live Portfolio Website
+👉 **[View Live Site](https://manish1422n.github.io/pwc-powerbi-project)**
+
 ---
 
 ## 🗂️ Project Overview
